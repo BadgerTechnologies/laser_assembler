@@ -290,6 +290,15 @@ bool BaseAssembler<T>::assembleScansInternal(AssembleScans::Request& req, Assemb
 
   boost::unique_lock<boost::mutex> scan_hist_lock(scan_hist_mutex_) ;
 
+  if (scan_hist_.size() == 0)
+  {
+    resp.cloud.header.frame_id = fixed_frame_ ;
+    resp.cloud.header.stamp = req.end ;
+    resp.cloud.points.resize (0) ;
+    resp.cloud.channels.resize (0) ;
+    return true;
+  }
+
   if (blocking_period > ros::Duration(0.0))
   {
     // Blocking period is always in wall-clock time, as it is meant to handle
