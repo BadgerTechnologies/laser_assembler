@@ -295,7 +295,7 @@ bool BaseAssembler<T>::assembleScansInternal(AssembleScans::Request& req, Assemb
     // Blocking period is always in wall-clock time, as it is meant to handle
     // scheduling delays and topic racing, sim time is not appropriate.
     boost::chrono::steady_clock::time_point end_tp = boost::chrono::steady_clock::now() + boost::chrono::nanoseconds(blocking_period.toNSec());
-    while (boost::chrono::steady_clock::now() < end_tp && scan_hist_.rbegin()->header.stamp < req.end)
+    while (boost::chrono::steady_clock::now() < end_tp && (scan_hist_.size() == 0 || scan_hist_.rbegin()->header.stamp < req.end))
     {
       scan_added_cv_.wait_until(scan_hist_lock, end_tp);
     }
